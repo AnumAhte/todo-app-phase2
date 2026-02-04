@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+*.egg-info/
+
+# Environment files
+.env
+.env.local
+.env*.local
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+tmpclaude-*
+
+# Database
+*.db
+*.sqlite
+
+# Alembic
+alembic/versions/__pycache__/
+
+# Cookies and session files
+cookies*.txt
+*.cookies
+
+# Claude local settings
+.claude/settings.local.json
+
+# Windows null device
+nul

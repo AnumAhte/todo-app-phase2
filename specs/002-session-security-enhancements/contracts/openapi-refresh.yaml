@@ -1,0 +1,209 @@
+openapi: 3.1.0
+info:
+  title: Session Security Enhancements API
+  description: |
+    API extensions for Phase II session management.
+    These endpoints are provided by Better Auth and configured in this feature.
+  version: 2.0.0
+  contact:
+    name: Todo Phase 2 Team
+
+servers:
+  - url: http://localhost:3000
+    description: Development server (Next.js)
+  - url: https://todo-app.example.com
+    description: Production server
+
+paths:
+  /api/auth/sign-in/email:
+    post:
+      summary: Sign in with email and password
+      description: |
+        Authenticates user and sets HTTP-only cookies for access and refresh tokens.
+        No tokens are returned in the response body.
+      operationId: signInEmail
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Login successful - tokens set in cookies
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: HTTP-only cookies for access_token and refresh_token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/sign-out:
+    post:
+      summary: Sign out and clear session
+      description: |
+        Clears all authentication cookies and invalidates the session.
+      operationId: signOut
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful - cookies cleared
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Expired cookies to clear session
+
+  /api/auth/get-session:
+    get:
+      summary: Get current session
+      description: |
+        Returns current session information if valid.
+        If access token is expired but refresh token is valid, automatically refreshes.
+      operationId: getSession
+      tags:
+        - Session
+      parameters:
+        - name: update
+          in: query
+          description: Force refresh of access token
+          schema:
+            type: boolean
+            default: false
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Session valid
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: New access token cookie if refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          description: Session expired or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/token:
+    get:
+      summary: Get current access token (for API calls)
+      description: |
+        Returns the current access token from the session cookie.
+        Used by frontend to get token for Authorization header.
+      operationId: getToken
+      tags:
+        - Session
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Token retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: todo_session_token
+      description: HTTP-only session cookie set by sign-in
+
+  schemas:
+    SignInRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "********"
+
+    SessionResponse:
+      type: object
+      properties:
+        session:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            userId:
+              type: string
+              format: uuid
+            expiresAt:
+              type: string
+              format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            email:
+              type: string
+              format: email
+            name:
+              type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT access token for Authorization header
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Invalid credentials"
+            code:
+              type: string
+              example: "INVALID_CREDENTIALS"
+
+tags:
+  - name: Authentication
+    description: Login and logout operations
+  - name: Session
+    description: Session management and token operations
