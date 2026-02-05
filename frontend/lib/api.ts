@@ -40,11 +40,15 @@ async function attemptRefresh(): Promise<boolean> {
 
   refreshPromise = (async () => {
     try {
-      // Use Better Auth's getSession with update flag to force a refresh
-      const session = await authClient.getSession({ update: true });
+      // Use Better Auth's getSession to check/refresh session
+      const session = await authClient.getSession({
+        fetchOptions: {
+          credentials: "include",
+        },
+      });
 
       if (session?.data?.session) {
-        // Refresh successful
+        // Session is valid
         return true;
       }
 
@@ -157,7 +161,7 @@ async function fetchWithAuth<T>(
       headers,
       credentials: "include", // Include cookies for session management
     });
-  } catch (networkError) {
+  } catch (_networkError) {
     // Handle network errors with exponential backoff
     if (retryCount < MAX_RETRIES) {
       const delay = getBackoffDelay(retryCount);
