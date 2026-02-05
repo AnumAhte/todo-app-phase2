@@ -161,8 +161,8 @@ async function fetchWithAuth<T>(
       headers,
       credentials: "include", // Include cookies for session management
     });
-  } catch (_networkError) {
-    // Handle network errors with exponential backoff
+  } catch {
+    // Handle network errors with exponential backoff (error details not needed)
     if (retryCount < MAX_RETRIES) {
       const delay = getBackoffDelay(retryCount);
       console.warn(
