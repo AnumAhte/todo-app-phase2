@@ -5,7 +5,7 @@
  * Main page for managing user tasks with full CRUD operations
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { Task } from "@/lib/types";
 import {
@@ -24,15 +24,10 @@ export default function TasksPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch tasks on mount
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
   /**
    * Load tasks from the API
    */
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -53,7 +48,12 @@ export default function TasksPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
+
+  // Fetch tasks on mount
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   /**
    * Create a new task
