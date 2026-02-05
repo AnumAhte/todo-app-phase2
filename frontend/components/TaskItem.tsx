@@ -85,11 +85,11 @@ export default function TaskItem({
       {/* Checkbox for completion status */}
       <input
         type="checkbox"
-        checked={task.isCompleted}
+        checked={task.is_completed}
         onChange={handleToggle}
         disabled={isLoading}
         className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 disabled:opacity-50 cursor-pointer"
-        aria-label={`Mark "${task.title}" as ${task.isCompleted ? "incomplete" : "complete"}`}
+        aria-label={`Mark "${task.title}" as ${task.is_completed ? "incomplete" : "complete"}`}
       />
 
       {/* Task title or edit input */}
@@ -114,7 +114,7 @@ export default function TaskItem({
         ) : (
           <p
             className={`text-gray-900 truncate ${
-              task.isCompleted ? "line-through text-gray-500" : ""
+              task.is_completed ? "line-through text-gray-500" : ""
             }`}
           >
             {task.title}

@@ -89,7 +89,7 @@ export default function TasksPage() {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === taskId
-          ? { ...task, isCompleted: !task.isCompleted }
+          ? { ...task, is_completed: !task.is_completed }
           : task
       )
     );
@@ -111,7 +111,7 @@ export default function TasksPage() {
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === taskId
-            ? { ...task, isCompleted: !task.isCompleted }
+            ? { ...task, is_completed: !task.is_completed }
             : task
         )
       );
@@ -210,8 +210,8 @@ export default function TasksPage() {
           Manage your tasks and stay organized
           {tasks.length > 0 && (
             <span className="ml-2 text-sm">
-              ({tasks.filter((t) => !t.isCompleted).length} active,{" "}
-              {tasks.filter((t) => t.isCompleted).length} completed)
+              ({tasks.filter((t) => !t.is_completed).length} active,{" "}
+              {tasks.filter((t) => t.is_completed).length} completed)
             </span>
           )}
         </p>

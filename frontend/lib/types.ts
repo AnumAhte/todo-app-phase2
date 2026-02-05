@@ -10,13 +10,15 @@ export interface User {
   updatedAt: string;
 }
 
+// Backend uses snake_case, frontend uses camelCase
+// We keep camelCase in frontend and convert at API boundary
 export interface Task {
   id: string;
-  userId: string;
+  user_id: string;
   title: string;
-  isCompleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_completed: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TaskCreate {
@@ -25,7 +27,7 @@ export interface TaskCreate {
 
 export interface TaskUpdate {
   title?: string;
-  isCompleted?: boolean;
+  is_completed?: boolean;
 }
 
 export interface TaskListResponse {
